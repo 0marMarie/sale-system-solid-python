@@ -39,6 +39,40 @@ class Order:
             raise Exception(f"Unknown payment type: {payment_type}")
 
 
+# Create a new Pay class to separate payment from Order class
+class paymentMethods:
+    """
+    Payment Methods class
+
+    Benefits: After separation order has one responsipility and pay has one responsipility
+              Increased Cohesion
+    drawback: Introduced some coupling
+    """
+    def debit_type(self, order, security_code):
+        """ 
+        This is the debit type method.
+
+        @param order: this is the order object
+        @param security_code: this is the security code for product
+        @return: None
+        """
+        print("Processing debit payment type")
+        print(f"Verifying security code: {security_code}")
+        order.status = "paid"
+
+    def credit_type(self, order, security_code):
+        """ 
+        This is the credit type method.
+
+        @param order: this is the order object
+        @param security_code: this is the security code for product
+        @return: None
+        """
+        print("Processing credit payment type")
+        print(f"Verifying security code: {security_code}")
+        order.status = "paid"
+
+
 order = Order()
 order.add_item("Keyboard", 1, 50)
 order.add_item("SSD", 1, 150)
