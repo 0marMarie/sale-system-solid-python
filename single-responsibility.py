@@ -1,7 +1,7 @@
 # Author     :  Omar Hamed Marie
 # Description:  sale-system-improved-design-single-responsipility
 # Date       :  8 SEP 2022
-# Version    :  V 1.1
+# Version    :  V 1.2
 
 
 ## Design Problem:
@@ -9,6 +9,9 @@
 
 ## Solved Using:
 ## Single Responsibility Principle
+
+
+from concurrent.futures import process
 
 
 class Order:
@@ -31,19 +34,6 @@ class Order:
         for i in range(len(self.prices)):
             total += self.quantities[i] * self.prices[i]
         return total
-
-    def pay(self, payment_type, security_code):
-        """Paying the Order"""
-        if payment_type == "debit":
-            print("Processing debit payment type")
-            print(f"Verifying security code: {security_code}")
-            self.status = "paid"
-        elif payment_type == "credit":
-            print("Processing credit payment type")
-            print(f"Verifying security code: {security_code}")
-            self.status = "paid"
-        else:
-            raise Exception(f"Unknown payment type: {payment_type}")
 
 
 # Create a new Pay class to separate payment from Order class
@@ -80,10 +70,12 @@ class paymentMethods:
         order.status = "paid"
 
 
+## User code
 order = Order()
 order.add_item("Keyboard", 1, 50)
 order.add_item("SSD", 1, 150)
 order.add_item("USB cable", 2, 5)
 
 print(order.total_price())
-order.pay("debit", "0372846")
+processor = paymentMethods()
+processor.credit_type(order, "0372846")
