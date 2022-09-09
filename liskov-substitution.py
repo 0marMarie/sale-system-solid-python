@@ -5,10 +5,10 @@
 
 
 ## Design Problem:
-## If we added a new payment method we will need to modify the paymentMethod class
+## As paybal works with emails not security numbers, here we are altering the correctness of the program
 
 ## Solved Using:
-## Open Closed Principle
+## Liskov Substitution Principle
 
 from abc import ABC, abstractmethod
 
@@ -44,36 +44,47 @@ class PaymentMethods(ABC):
     drawback: Introduced some coupling
     """
     @abstractmethod
-    def pay(self, order, security_code):
+    def pay(self, order):
         """
         Declaration of an abstract method to be initialized later
         Benefits: We can extend code by adding more subclasses without modifying PaymentMethods.
         
         @param order: this is the order object
-        @param security_code: this is the security code for product
         """
         pass
 
 
 class DebitPayment(PaymentMethods):
-    def pay(self, order, security_code):
+    
+    def __init__(self, security_code):
+        self.security_code = security_code
+    
+    def pay(self, order):
         """Impementing the abstract method declared in PaymentMethod"""
         print("Processing debit payment type")
-        print(f"Verifying security code: {security_code}")
+        print(f"Verifying security code: {self.security_code}")
         order.status = "paid"
 
 class CreditPayment(PaymentMethods):
-    def pay(self, order, security_code):
+
+    def __init__(self, security_code):
+        self.security_code = security_code
+
+    def pay(self, order):
         """Impementing the abstract method declared in PaymentMethod"""
         print("Processing credit payment type")
-        print(f"Verifying security code: {security_code}")
+        print(f"Verifying security code: {self.security_code}")
         order.status = "paid"
 
 class PaybalPayment(PaymentMethods):
-    def pay(self, order, security_code):
+
+    def __init__(self, email_address):
+        self.email_address = email_address
+
+    def pay(self, order):
         """Impementing the abstract method declared in PaymentMethod"""
         print("Processing paybal payment type")
-        print(f"Verifying security code: {security_code}")
+        print(f"Verifying email address: {self.email_address}")
         order.status = "paid"
 
 
@@ -84,5 +95,5 @@ order.add_item("SSD", 1, 150)
 order.add_item("USB cable", 2, 5)
 
 print(order.total_price())
-processor = PaybalPayment()
-processor.pay(order, "0372846")
+processor = PaybalPayment("omar@marie.com")
+processor.pay(order)
