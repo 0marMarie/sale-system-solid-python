@@ -1,5 +1,5 @@
 # Author     :  Omar Hamed Marie
-# Description:  Refactor the payment class to be open/closed
+# Description:  sale-system-improved-design-liskov-substitution
 # Date       :  9 SEP 2022
 # Version    :  V 1.2
 
