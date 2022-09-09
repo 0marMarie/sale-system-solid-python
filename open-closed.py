@@ -1,14 +1,9 @@
 # Author     :  Omar Hamed Marie
-# Description:  sale-system-improved-design-single-responsipility
-# Date       :  8 SEP 2022
+# Description:  Refactor the payment class to be open/closed
+# Date       :  9 SEP 2022
 # Version    :  V 1.1
 
-
-## Design Problem:
-## Every class should only be responsible to one thing
-
-## Solved Using:
-## Single Responsibility Principle
+## Problem : If we added a new payment method it will violate the open/closed principle
 
 
 class Order:
