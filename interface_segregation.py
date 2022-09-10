@@ -117,7 +117,7 @@ order.add_item("USB cable", 2, 5)
 print(order.total_price())
 
 authorizer = SmsAuthorizer()
-processor = CreditPayment("2349875", authorizer) # If credit we don't pass authorizer
+processor = DebitPayment("2349875", authorizer) # If credit we don't pass authorizer
 
 authorizer.auth_sms(4562311) # Authorize before making order | debit and paybal
 processor.pay(order)
