@@ -1,5 +1,5 @@
 # Author     :  Omar Hamed Marie
-# Description:  sale-system-improved-design-liskov-substitution
+# Description:  sale-system-improved-design-interface-segregation
 # Date       :  9 SEP 2022
 # Version    :  V 1.3
 
@@ -56,35 +56,27 @@ class PaymentMethods(ABC):
         pass
 
 
-class PaymentMethodsSMS(PaymentMethods):
-    """
-    Inteface segregation as not all subclasses use a verfcation 
-    Also Implements PaymentMethods
-    """
+class SmsAuthorizer():
+    """Inteface segregation refactor using composition"""
+    authorized = False
 
-    @abstractmethod
-    def aut_sms(self, code):
-        """
-        Declaring a two factor authentication to authorize users
-
-        @param code: takes a code from user to authenticate
-        """
-        pass
-
-
-class DebitPayment(PaymentMethodsSMS):
-    
-    def __init__(self, security_code):
-        self.security_code = security_code
-        self.verfied = False
-
-    def aut_sms(self, code):
+    def auth_sms(self, code):
         print(f"Verfying sms code: {code}")
-        self.verfied = True
+        self.authorized = True
     
+    def is_authorized(self):
+        return self.authorized
+
+
+class DebitPayment(PaymentMethods):
+    
+    def __init__(self, security_code, authorized: SmsAuthorizer):
+        self.security_code = security_code
+        self.authorized = authorized
+
     def pay(self, order):
         """Impementing the abstract method declared in PaymentMethod"""
-        if not self.verfied:
+        if not self.authorized.is_authorized():
             raise Exception("Not authorized.")
         print("Processing debit payment type")
         print(f"Verifying security code: {self.security_code}")
@@ -101,19 +93,15 @@ class CreditPayment(PaymentMethods):
         print(f"Verifying security code: {self.security_code}")
         order.status = "paid"
 
-class PaybalPayment(PaymentMethodsSMS):
+class PaybalPayment(PaymentMethods):
 
-    def __init__(self, email_address):
+    def __init__(self, email_address, authorized: SmsAuthorizer):
         self.email_address = email_address
-        self.verfied = False
-
-    def aut_sms(self, code):
-        print(f"Verfying sms code: {code}")
-        self.verfied = True
+        self.authorized = authorized
 
     def pay(self, order):
         """Impementing the abstract method declared in PaymentMethod"""
-        if not self.verfied:
+        if not self.authorized.is_authorized():
             raise Exception("Not authorized.")
         print("Processing paybal payment type")
         print(f"Verifying email address: {self.email_address}")
@@ -127,5 +115,9 @@ order.add_item("SSD", 1, 150)
 order.add_item("USB cable", 2, 5)
 
 print(order.total_price())
-processor = PaybalPayment("omar@marie.com")
+
+authorizer = SmsAuthorizer()
+processor = CreditPayment("2349875", authorizer) # If credit we don't pass authorizer
+
+authorizer.auth_sms(4562311) # Authorize before making order | debit and paybal
 processor.pay(order)
